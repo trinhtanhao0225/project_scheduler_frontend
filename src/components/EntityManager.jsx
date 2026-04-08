@@ -45,7 +45,7 @@ const API_BASE_URL = "http://140.115.59.61:8888"; // Đặt link server của b�
 const apiFetch = async (endpoint, options = {}) => {
   try {
     // Thay đổi từ `/api${endpoint}` thành `${API_BASE_URL}${endpoint}`
-    const res = await fetch(`${API_BASE_URL}${endpoint}`, options); 
+    const res = await fetch(`${API_BASE_URL}/api${endpoint}`, options); 
     
     if (!res.ok) {
       const text = await res.text().catch(() => "");
