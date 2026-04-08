@@ -41,14 +41,13 @@ export default function EntityManager({ refresh }) {
 
 // ====================== FETCH HELPER ======================
 // Đảm bảo không có dấu gạch chéo dư thừa ở cuối
-const API_BASE_URL = "http://140.115.59.61:8888/docs"; 
+// ====================== FETCH HELPER ======================
+const API_BASE_URL = "/api";   // ← Sửa thành cái này
 
 const apiFetch = async (endpoint, options = {}) => {
   try {
-    // Đảm bảo endpoint truyền vào có dấu / ở đầu, ví dụ: "/nurses"
     const response = await fetch(`${API_BASE_URL}${endpoint}`, {
       ...options,
-      mode: 'cors', // Ép buộc chế độ cors
       headers: {
         'Content-Type': 'application/json',
         ...options.headers,
@@ -57,8 +56,9 @@ const apiFetch = async (endpoint, options = {}) => {
 
     if (!response.ok) {
       const errorDetail = await response.json().catch(() => ({}));
-      throw new Error(errorDetail.detail || `Error ${response.status}`);
+      throw new Error(errorDetail.detail || `HTTP error! status: ${response.status}`);
     }
+
     return await response.json();
   } catch (err) {
     console.error("API Call failed:", err);
