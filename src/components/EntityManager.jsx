@@ -41,30 +41,22 @@ export default function EntityManager({ refresh }) {
 
 // ====================== FETCH HELPER ======================
 // Đảm bảo không có dấu gạch chéo dư thừa ở cuối
-// ====================== FETCH HELPER ======================
-const API_BASE_URL = "/api";   // ← Sửa thành cái này
-
-const apiFetch = async (endpoint, options = {}) => {
-  try {
-    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
-      ...options,
-      headers: {
-        'Content-Type': 'application/json',
-        ...options.headers,
-      },
-    });
-
-    if (!response.ok) {
-      const errorDetail = await response.json().catch(() => ({}));
-      throw new Error(errorDetail.detail || `HTTP error! status: ${response.status}`);
+// ====================== FETCH HELPER =====================
+  const apiFetch = async (endpoint, options = {}) => {
+    try {
+      const res = await fetch(`/api${endpoint}`, options);
+      if (!res.ok) {
+        const text = await res.text().catch(() => "");
+        console.error(`API Error ${res.status} ${endpoint}:`, text);
+        throw new Error(`HTTP ${res.status}`);
+      }
+      return await res.json();
+    } catch (err) {
+      console.error(`Fetch failed ${endpoint}:`, err);
+      throw err;
     }
+  };
 
-    return await response.json();
-  } catch (err) {
-    console.error("API Call failed:", err);
-    throw err;
-  }
-};
   // ====================== FETCH FUNCTIONS ======================
   const fetchNurses = async () => {
     try {
