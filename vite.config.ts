@@ -17,13 +17,13 @@ export default defineConfig({
     },
   },
   server: {
-    proxy: {
-      '/api': {
-        target: 'http://140.115.59.61:8888', // backend
-        changeOrigin: true,
-        secure: false,
-        rewrite: (path) => path.replace(/^\/api/, ''),
-      },
+  proxy: {
+    '/api': {
+      target: 'http://140.115.59.61:8888',
+      changeOrigin: true,
+      secure: false,
+      rewrite: (path) => path.replace(/^\/api/, ''),   // bỏ /api trước khi gửi sang backend
     },
   },
+},
 })
