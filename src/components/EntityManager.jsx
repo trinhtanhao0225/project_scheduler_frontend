@@ -43,14 +43,14 @@ export default function EntityManager({ refresh }) {
 // ====================== FETCH HELPER ======================
 const apiFetch = async (endpoint, options = {}) => {
   try {
-    // Chuẩn hóa endpoint: luôn bắt đầu bằng dấu /
-    const normalized = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+    // Chuẩn hóa endpoint luôn bắt đầu bằng /
+    const normalizedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
+    
+    const frontendUrl = `/api${normalizedEndpoint}`;
 
-    const url = `/api${normalized}`;
+    console.log(`[API Request] ${frontendUrl}  → sẽ rewrite thành ${normalizedEndpoint}`);
 
-    console.log(`[API Request] ${url}`);
-
-    const res = await fetch(url, {
+    const res = await fetch(frontendUrl, {
       ...options,
       headers: {
         'Content-Type': 'application/json',
@@ -58,16 +58,16 @@ const apiFetch = async (endpoint, options = {}) => {
       },
     });
 
-    console.log(`[API Status] ${url} → ${res.status}`);
+    console.log(`[API Status] ${frontendUrl} → ${res.status}`);
 
     if (!res.ok) {
       const text = await res.text().catch(() => "");
-      console.error(`API Error ${res.status} ${url}:`, text);
+      console.error(`API Error ${res.status} ${frontendUrl}:`, text);
       throw new Error(`HTTP ${res.status}`);
     }
 
     const data = await res.json();
-    console.log(`[API Success] ${url}`, data);
+    console.log(`[API Success] ${frontendUrl}`, data);
     return data;
   } catch (err) {
     console.error(`Fetch failed ${endpoint}:`, err);
