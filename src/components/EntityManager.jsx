@@ -41,7 +41,7 @@ export default function EntityManager({ refresh }) {
 
 // ====================== FETCH HELPER ======================
 // Đảm bảo không có dấu gạch chéo dư thừa ở cuối
-const API_BASE_URL = "http://140.115.59.61:8888"; 
+const API_BASE_URL = "http://140.115.59.61:8888/docs"; 
 
 const apiFetch = async (endpoint, options = {}) => {
   try {
