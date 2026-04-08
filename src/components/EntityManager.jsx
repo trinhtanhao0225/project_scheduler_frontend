@@ -39,21 +39,25 @@ export default function EntityManager({ refresh }) {
     "DiabetesCare", "RespiratoryCare", "PhysicalTherapyAssist"
   ];
 
-  // ====================== FETCH HELPER ======================
-  const apiFetch = async (endpoint, options = {}) => {
-    try {
-      const res = await fetch(`/api${endpoint}`, options);
-      if (!res.ok) {
-        const text = await res.text().catch(() => "");
-        console.error(`API Error ${res.status} ${endpoint}:`, text);
-        throw new Error(`HTTP ${res.status}`);
-      }
-      return await res.json();
-    } catch (err) {
-      console.error(`Fetch failed ${endpoint}:`, err);
-      throw err;
+// ====================== FETCH HELPER ======================
+const API_BASE_URL = "http://140.115.59.61:8888"; // Đặt link server của bạn ở đây
+
+const apiFetch = async (endpoint, options = {}) => {
+  try {
+    // Thay đổi từ `/api${endpoint}` thành `${API_BASE_URL}${endpoint}`
+    const res = await fetch(`${API_BASE_URL}${endpoint}`, options); 
+    
+    if (!res.ok) {
+      const text = await res.text().catch(() => "");
+      console.error(`API Error ${res.status} ${endpoint}:`, text);
+      throw new Error(`HTTP ${res.status}`);
     }
-  };
+    return await res.json();
+  } catch (err) {
+    console.error(`Fetch failed ${endpoint}:`, err);
+    throw err;
+  }
+};
 
   // ====================== FETCH FUNCTIONS ======================
   const fetchNurses = async () => {
