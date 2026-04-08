@@ -40,25 +40,31 @@ export default function EntityManager({ refresh }) {
   ];
 
 // ====================== FETCH HELPER ======================
-const API_BASE_URL = "http://140.115.59.61:8888"; // Đặt link server của bạn ở đây
+// Đảm bảo không có dấu gạch chéo dư thừa ở cuối
+const API_BASE_URL = "http://140.115.59.61:8888"; 
 
 const apiFetch = async (endpoint, options = {}) => {
   try {
-    // Thay đổi từ `/api${endpoint}` thành `${API_BASE_URL}${endpoint}`
-    const res = await fetch(`${API_BASE_URL}/api${endpoint}`, options); 
-    
-    if (!res.ok) {
-      const text = await res.text().catch(() => "");
-      console.error(`API Error ${res.status} ${endpoint}:`, text);
-      throw new Error(`HTTP ${res.status}`);
+    // Đảm bảo endpoint truyền vào có dấu / ở đầu, ví dụ: "/nurses"
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+      ...options,
+      mode: 'cors', // Ép buộc chế độ cors
+      headers: {
+        'Content-Type': 'application/json',
+        ...options.headers,
+      },
+    });
+
+    if (!response.ok) {
+      const errorDetail = await response.json().catch(() => ({}));
+      throw new Error(errorDetail.detail || `Error ${response.status}`);
     }
-    return await res.json();
+    return await response.json();
   } catch (err) {
-    console.error(`Fetch failed ${endpoint}:`, err);
+    console.error("API Call failed:", err);
     throw err;
   }
 };
-
   // ====================== FETCH FUNCTIONS ======================
   const fetchNurses = async () => {
     try {
