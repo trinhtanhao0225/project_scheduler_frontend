@@ -40,34 +40,20 @@ export default function EntityManager({ refresh }) {
   ];
 
 // ====================== FETCH HELPER ======================
-const apiFetch = async (endpoint, options = {}) => {
-  try {
-    // Loại bỏ /api hoàn toàn
-    const cleanEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
-    
-    const res = await fetch(cleanEndpoint, {   // gọi trực tiếp /nurses, /patients
-      ...options,
-      headers: {
-        'Content-Type': 'application/json',
-        'Accept': 'application/json',
-        ...options.headers,
-      },
-    });
-
-    console.log(`[DEBUG] Gọi trực tiếp: ${cleanEndpoint}`);
-
-    if (!res.ok) {
-      const text = await res.text().catch(() => "");
-      console.error(`API Error ${res.status}:`, text);
-      throw new Error(`HTTP ${res.status}`);
+  const apiFetch = async (endpoint, options = {}) => {
+    try {
+      const res = await fetch(`/api${endpoint}`, options);
+      if (!res.ok) {
+        const text = await res.text().catch(() => "");
+        console.error(`API Error ${res.status} ${endpoint}:`, text);
+        throw new Error(`HTTP ${res.status}`);
+      }
+      return await res.json();
+    } catch (err) {
+      console.error(`Fetch failed ${endpoint}:`, err);
+      throw err;
     }
-
-    return await res.json();
-  } catch (err) {
-    console.error(`Fetch failed ${endpoint}:`, err);
-    throw err;
-  }
-};
+  };
   // ====================== FETCH FUNCTIONS ======================
   const fetchNurses = async () => {
     try {
