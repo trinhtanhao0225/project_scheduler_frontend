@@ -43,31 +43,32 @@ export default function EntityManager({ refresh }) {
 // ====================== FETCH HELPER ======================
 const apiFetch = async (endpoint, options = {}) => {
   try {
-    // Chuẩn hóa endpoint luôn bắt đầu bằng /
+    // Chuẩn hóa endpoint
     const normalizedEndpoint = endpoint.startsWith('/') ? endpoint : `/${endpoint}`;
     
     const frontendUrl = `/api${normalizedEndpoint}`;
 
-    console.log(`[API Request] ${frontendUrl}  → sẽ rewrite thành ${normalizedEndpoint}`);
+    console.log(`[DEBUG] Frontend gọi: ${frontendUrl}  → Backend thực tế: /nurses`);
 
     const res = await fetch(frontendUrl, {
       ...options,
       headers: {
         'Content-Type': 'application/json',
+        'accept': 'application/json',        // ← thêm giống curl
         ...options.headers,
       },
     });
 
-    console.log(`[API Status] ${frontendUrl} → ${res.status}`);
+    console.log(`[DEBUG] Status: ${res.status} - ${frontendUrl}`);
 
     if (!res.ok) {
       const text = await res.text().catch(() => "");
-      console.error(`API Error ${res.status} ${frontendUrl}:`, text);
+      console.error(`API Error ${res.status}:`, text);
       throw new Error(`HTTP ${res.status}`);
     }
 
     const data = await res.json();
-    console.log(`[API Success] ${frontendUrl}`, data);
+    console.log(`[DEBUG] Success:`, data);
     return data;
   } catch (err) {
     console.error(`Fetch failed ${endpoint}:`, err);
